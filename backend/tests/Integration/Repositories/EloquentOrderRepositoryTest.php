@@ -97,6 +97,14 @@ final class EloquentOrderRepositoryTest extends TestCase
         $this->assertSame($older->id, $match->id());
     }
 
+    public function test_first_matchable_returns_null_for_different_amount(): void
+    {
+        $this->seedOrder(side: Side::Sell, priceCent: 9_400_000, amountSubunit: 2_000_000);
+        $incomingBuy = $this->makeDomainOrder(side: Side::Buy, priceUsd: '95000', amountDecimal: '0.01');
+
+        $this->assertNull($this->repository->firstMatchableCounterOrder($incomingBuy));
+    }
+
     public function test_find_open_for_update_returns_open_order(): void
     {
         $eloquent = $this->seedOrder(side: Side::Buy, priceCent: 9_500_000);
@@ -135,13 +143,14 @@ final class EloquentOrderRepositoryTest extends TestCase
         int $priceCent,
         OrderStatus $status = OrderStatus::Open,
         ?string $createdAt = null,
+        int $amountSubunit = 1_000_000,
     ): EloquentOrder {
         return EloquentOrder::create([
             'user_id' => $this->user->id,
             'symbol' => Symbol::BTC,
             'side' => $side,
             'price' => $priceCent,
-            'amount' => 1_000_000,
+            'amount' => $amountSubunit,
             'status' => $status,
             'created_at' => $createdAt,
             'updated_at' => $createdAt,
