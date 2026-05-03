@@ -9,7 +9,7 @@ use Throwable;
 
 final class Amount
 {
-    use FixedPointInteger;
+    use PositiveScalar;
 
     private const SCALE = 8;
 

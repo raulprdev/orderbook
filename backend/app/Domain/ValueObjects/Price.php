@@ -9,7 +9,7 @@ use Throwable;
 
 final class Price
 {
-    use FixedPointInteger;
+    use PositiveScalar;
 
     private const SCALE = 2;
 

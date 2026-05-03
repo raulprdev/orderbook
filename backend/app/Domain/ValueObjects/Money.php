@@ -9,7 +9,7 @@ use Throwable;
 
 final class Money
 {
-    use FixedPointInteger;
+    use PositiveScalar;
 
     private const SCALE = 6;
     private const DISPLAY_DECIMALS = 2;

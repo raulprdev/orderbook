@@ -6,7 +6,7 @@ namespace App\Domain\ValueObjects;
 
 use Throwable;
 
-trait FixedPointInteger
+trait PositiveScalar
 {
     private function __construct(private readonly int $value)
     {
