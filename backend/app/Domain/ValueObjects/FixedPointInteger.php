@@ -20,7 +20,13 @@ trait FixedPointInteger
             );
         }
 
+        static::additionalChecks($value);
+
         return new static($value);
+    }
+
+    protected static function additionalChecks(int $value): void
+    {
     }
 
     final public static function fromDecimalString(string $input): static
