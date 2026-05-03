@@ -13,7 +13,7 @@ final class OrderStatusTest extends TestCase
     public static function allowedTransitions(): array
     {
         return [
-            'open to filled'    => [OrderStatus::Open, OrderStatus::Filled],
+            'open to filled' => [OrderStatus::Open, OrderStatus::Filled],
             'open to cancelled' => [OrderStatus::Open, OrderStatus::Cancelled],
         ];
     }
@@ -21,12 +21,12 @@ final class OrderStatusTest extends TestCase
     public static function rejectedTransitions(): array
     {
         return [
-            'open to open'           => [OrderStatus::Open,      OrderStatus::Open],
-            'filled to open'         => [OrderStatus::Filled,    OrderStatus::Open],
-            'filled to filled'       => [OrderStatus::Filled,    OrderStatus::Filled],
-            'filled to cancelled'    => [OrderStatus::Filled,    OrderStatus::Cancelled],
-            'cancelled to open'      => [OrderStatus::Cancelled, OrderStatus::Open],
-            'cancelled to filled'    => [OrderStatus::Cancelled, OrderStatus::Filled],
+            'open to open' => [OrderStatus::Open,      OrderStatus::Open],
+            'filled to open' => [OrderStatus::Filled,    OrderStatus::Open],
+            'filled to filled' => [OrderStatus::Filled,    OrderStatus::Filled],
+            'filled to cancelled' => [OrderStatus::Filled,    OrderStatus::Cancelled],
+            'cancelled to open' => [OrderStatus::Cancelled, OrderStatus::Open],
+            'cancelled to filled' => [OrderStatus::Cancelled, OrderStatus::Filled],
             'cancelled to cancelled' => [OrderStatus::Cancelled, OrderStatus::Cancelled],
         ];
     }

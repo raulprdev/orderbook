@@ -18,7 +18,7 @@ final class EloquentOrderRepository implements OrderRepository
     public function save(DomainOrder $order): DomainOrder
     {
         $eloquent = $order->id() === null
-            ? new EloquentOrder()
+            ? new EloquentOrder
             : EloquentOrder::findOrFail($order->id());
 
         $this->applyToEloquent($order, $eloquent);

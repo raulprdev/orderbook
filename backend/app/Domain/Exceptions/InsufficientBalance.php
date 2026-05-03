@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace App\Domain\Exceptions;
 
-final class InsufficientBalance extends DomainException
-{
-}
+final class InsufficientBalance extends DomainException {}

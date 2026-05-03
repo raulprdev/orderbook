@@ -8,9 +8,7 @@ use Throwable;
 
 trait PositiveScalar
 {
-    private function __construct(private readonly int $value)
-    {
-    }
+    private function __construct(private readonly int $value) {}
 
     final public static function fromInt(int $value): static
     {
@@ -25,9 +23,7 @@ trait PositiveScalar
         return new static($value);
     }
 
-    protected static function additionalChecks(int $value): void
-    {
-    }
+    protected static function additionalChecks(int $value): void {}
 
     final public static function fromDecimalString(string $input): static
     {

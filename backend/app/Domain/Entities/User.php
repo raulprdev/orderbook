@@ -12,8 +12,7 @@ final class User
     public function __construct(
         private readonly int $id,
         private Money $balance,
-    ) {
-    }
+    ) {}
 
     public function debit(Money $amount): void
     {

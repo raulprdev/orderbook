@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace App\Domain\Exceptions;
 
-final class InvalidOrderTransition extends DomainException
-{
-}
+final class InvalidOrderTransition extends DomainException {}

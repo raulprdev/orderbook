@@ -19,7 +19,7 @@ final class EloquentUserRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new EloquentUserRepository();
+        $this->repository = new EloquentUserRepository;
     }
 
     public function test_save_persists_balance_change(): void

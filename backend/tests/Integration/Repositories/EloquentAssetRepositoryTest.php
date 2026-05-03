@@ -7,7 +7,6 @@ namespace Tests\Integration\Repositories;
 use App\Domain\Entities\Asset as DomainAsset;
 use App\Domain\ValueObjects\Amount;
 use App\Enums\Symbol;
-use App\Models\Asset as EloquentAsset;
 use App\Models\User;
 use App\Repositories\EloquentAssetRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +23,7 @@ final class EloquentAssetRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new EloquentAssetRepository();
+        $this->repository = new EloquentAssetRepository;
         $this->user = User::factory()->create();
     }
 

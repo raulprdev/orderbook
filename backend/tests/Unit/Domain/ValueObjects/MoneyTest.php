@@ -20,11 +20,11 @@ final class MoneyTest extends TestCase
     public static function validUsdStrings(): array
     {
         return [
-            'zero'                  => ['0',          0],
-            'integer dollars'       => ['14',         14_000_000],
-            'two decimals'          => ['14.25',      14_250_000],
-            'six decimals exact'    => ['14.250001',  14_250_001],
-            'large value'           => ['1000000',    1_000_000_000_000],
+            'zero' => ['0',          0],
+            'integer dollars' => ['14',         14_000_000],
+            'two decimals' => ['14.25',      14_250_000],
+            'six decimals exact' => ['14.250001',  14_250_001],
+            'large value' => ['1000000',    1_000_000_000_000],
             'fractional cents only' => ['0.000001',   1],
         ];
     }
@@ -32,16 +32,16 @@ final class MoneyTest extends TestCase
     public static function invalidUsdStrings(): array
     {
         return [
-            'negative'             => ['-1.00'],
-            'too many decimals'    => ['14.2500001'],
-            'trailing dot'         => ['14.'],
-            'leading dot'          => ['.25'],
-            'multiple dots'        => ['14.2.3'],
-            'scientific notation'  => ['1e5'],
-            'letters'              => ['abc'],
-            'empty string'         => [''],
-            'leading whitespace'   => [' 14.25'],
-            'trailing whitespace'  => ['14.25 '],
+            'negative' => ['-1.00'],
+            'too many decimals' => ['14.2500001'],
+            'trailing dot' => ['14.'],
+            'leading dot' => ['.25'],
+            'multiple dots' => ['14.2.3'],
+            'scientific notation' => ['1e5'],
+            'letters' => ['abc'],
+            'empty string' => [''],
+            'leading whitespace' => [' 14.25'],
+            'trailing whitespace' => ['14.25 '],
         ];
     }
 
@@ -61,11 +61,11 @@ final class MoneyTest extends TestCase
     public static function formattingCases(): array
     {
         return [
-            'zero formats with two decimals'           => [0,            '0.00'],
-            'whole dollars format with two decimals'   => [14_000_000,   '14.00'],
-            'two-decimal value formats compact'        => [14_250_000,   '14.25'],
-            'sub-cent precision shown when present'    => [14_250_001,   '14.250001'],
-            'one micro shown with full precision'      => [1,            '0.000001'],
+            'zero formats with two decimals' => [0,            '0.00'],
+            'whole dollars format with two decimals' => [14_000_000,   '14.00'],
+            'two-decimal value formats compact' => [14_250_000,   '14.25'],
+            'sub-cent precision shown when present' => [14_250_001,   '14.250001'],
+            'one micro shown with full precision' => [1,            '0.000001'],
         ];
     }
 

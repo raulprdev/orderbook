@@ -16,7 +16,7 @@ final class EloquentAssetRepository implements AssetRepository
     public function save(DomainAsset $asset): DomainAsset
     {
         $eloquent = $asset->id() === null
-            ? new EloquentAsset()
+            ? new EloquentAsset
             : EloquentAsset::findOrFail($asset->id());
 
         $this->applyToEloquent($asset, $eloquent);

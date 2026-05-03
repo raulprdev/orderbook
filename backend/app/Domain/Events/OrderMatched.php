@@ -21,6 +21,5 @@ final class OrderMatched
         public readonly Amount $matchAmount,
         public readonly Money $volume,
         public readonly Money $fee,
-    ) {
-    }
+    ) {}
 }

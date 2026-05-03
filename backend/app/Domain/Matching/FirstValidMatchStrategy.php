@@ -11,8 +11,7 @@ final class FirstValidMatchStrategy implements MatchingStrategy
 {
     public function __construct(
         private readonly OrderRepository $orderRepository,
-    ) {
-    }
+    ) {}
 
     public function findMatch(Order $incoming): ?Order
     {

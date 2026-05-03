@@ -27,7 +27,7 @@ final class EloquentOrderRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new EloquentOrderRepository();
+        $this->repository = new EloquentOrderRepository;
         $this->user = User::factory()->create();
     }
 

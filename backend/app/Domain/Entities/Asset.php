@@ -16,8 +16,7 @@ final class Asset
         private readonly Symbol $symbol,
         private Amount $amount,
         private Amount $lockedAmount,
-    ) {
-    }
+    ) {}
 
     public function lock(Amount $amount): void
     {

@@ -12,6 +12,7 @@ final class Money
     use PositiveScalar;
 
     private const SCALE = 6;
+
     private const DISPLAY_DECIMALS = 2;
 
     public static function fromMicroUsd(int $microUsd): self
