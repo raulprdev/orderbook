@@ -36,6 +36,15 @@ final class EloquentUserRepository implements UserRepository
         );
     }
 
+    public function register(string $name, string $email, string $password): int
+    {
+        return EloquentUser::create([
+            'name' => $name,
+            'email' => $email,
+            'password' => $password,
+        ])->id;
+    }
+
     private function toDomain(?EloquentUser $eloquent): ?DomainUser
     {
         if ($eloquent === null) {

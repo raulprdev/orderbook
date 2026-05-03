@@ -13,4 +13,6 @@ interface UserRepository
     public function findById(int $id): ?User;
 
     public function findByIdForUpdate(int $id): ?User;
+
+    public function register(string $name, string $email, string $password): int;
 }
