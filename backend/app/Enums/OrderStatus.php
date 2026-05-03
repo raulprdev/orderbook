@@ -10,6 +10,16 @@ enum OrderStatus: string
     case Filled = 'filled';
     case Cancelled = 'cancelled';
 
+    public function isOpen(): bool
+    {
+        return $this === self::Open;
+    }
+
+    public function isCompleted(): bool
+    {
+        return ! $this->isOpen();
+    }
+
     public function canTransitionTo(self $next): bool
     {
         return match ($this) {
