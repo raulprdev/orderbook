@@ -15,7 +15,7 @@ use App\Enums\Symbol;
 final class Order
 {
     public function __construct(
-        private readonly int $id,
+        private readonly ?int $id,
         private readonly int $userId,
         private readonly Symbol $symbol,
         private readonly Side $side,
@@ -49,7 +49,7 @@ final class Order
         $this->status = $next;
     }
 
-    public function id(): int
+    public function id(): ?int
     {
         return $this->id;
     }
