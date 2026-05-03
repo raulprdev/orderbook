@@ -17,7 +17,7 @@ use App\Repositories\Contracts\OrderRepository;
 use App\Repositories\Contracts\TradeRepository;
 use App\Repositories\Contracts\UserRepository;
 
-final class MatchOrderService
+class MatchOrderService
 {
     public function __construct(
         private readonly UserRepository $users,
