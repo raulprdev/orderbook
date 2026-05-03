@@ -15,6 +15,10 @@ final class Money
 
     private const DISPLAY_DECIMALS = 2;
 
+    private const VOLUME_DIVISOR = 10_000;
+
+    private const BASIS_POINTS_DENOMINATOR = 10_000;
+
     public static function fromMicroUsd(int $microUsd): self
     {
         return self::fromInt($microUsd);
@@ -33,6 +37,16 @@ final class Money
     public function toUsd(): string
     {
         return $this->toDecimalString(self::DISPLAY_DECIMALS);
+    }
+
+    public static function fromVolume(Price $price, Amount $amount): self
+    {
+        return self::fromMicroUsd(intdiv($price->cent() * $amount->subunit(), self::VOLUME_DIVISOR));
+    }
+
+    public function applyBasisPoints(int $basisPoints): self
+    {
+        return self::fromMicroUsd(intdiv($this->microUsd() * $basisPoints, self::BASIS_POINTS_DENOMINATOR));
     }
 
     protected static function scale(): int

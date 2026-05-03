@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit\Domain\ValueObjects;
 
 use App\Domain\Exceptions\InvalidMoney;
+use App\Domain\ValueObjects\Amount;
 use App\Domain\ValueObjects\Money;
+use App\Domain\ValueObjects\Price;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -101,5 +103,37 @@ final class MoneyTest extends TestCase
     {
         $this->assertTrue(Money::fromMicroUsd(100)->equals(Money::fromMicroUsd(100)));
         $this->assertFalse(Money::fromMicroUsd(100)->equals(Money::fromMicroUsd(101)));
+    }
+
+    public function test_from_volume_computes_price_times_amount(): void
+    {
+        $price = Price::fromCent(9_500_000);
+        $amount = Amount::fromSubunit(1_000_000);
+
+        $volume = Money::fromVolume($price, $amount);
+
+        $this->assertSame(950_000_000, $volume->microUsd());
+    }
+
+    public function test_apply_basis_points_returns_fraction(): void
+    {
+        $volume = Money::fromMicroUsd(950_000_000);
+
+        $fee = $volume->applyBasisPoints(150);
+
+        $this->assertSame(14_250_000, $fee->microUsd());
+    }
+
+    public function test_apply_basis_points_with_zero_returns_zero(): void
+    {
+        $this->assertSame(0, Money::fromMicroUsd(950_000_000)->applyBasisPoints(0)->microUsd());
+    }
+
+    public function test_apply_basis_points_with_full_rate_returns_full_amount(): void
+    {
+        $this->assertSame(
+            950_000_000,
+            Money::fromMicroUsd(950_000_000)->applyBasisPoints(10_000)->microUsd()
+        );
     }
 }
