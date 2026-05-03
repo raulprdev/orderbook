@@ -11,7 +11,7 @@ use App\Enums\Symbol;
 final class Asset
 {
     public function __construct(
-        private readonly int $id,
+        private readonly ?int $id,
         private readonly int $userId,
         private readonly Symbol $symbol,
         private Amount $amount,
@@ -71,7 +71,7 @@ final class Asset
         }
     }
 
-    public function id(): int
+    public function id(): ?int
     {
         return $this->id;
     }
