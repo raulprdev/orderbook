@@ -15,7 +15,7 @@ final class EloquentTradeRepository implements TradeRepository
 {
     public function save(DomainTrade $trade): DomainTrade
     {
-        $eloquent = new EloquentTrade();
+        $eloquent = new EloquentTrade;
 
         $eloquent->buy_order_id = $trade->buyOrderId();
         $eloquent->sell_order_id = $trade->sellOrderId();

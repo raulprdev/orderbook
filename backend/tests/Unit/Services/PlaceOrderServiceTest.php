@@ -8,11 +8,13 @@ use App\DataTransferObjects\PlaceOrderData;
 use App\Domain\Entities\Asset;
 use App\Domain\Entities\Order;
 use App\Domain\Entities\User;
+use App\Domain\Events\OrderMatched;
 use App\Domain\Exceptions\InsufficientAsset;
 use App\Domain\Exceptions\InsufficientBalance;
 use App\Domain\Matching\MatchingStrategy;
 use App\Domain\ValueObjects\Amount;
 use App\Domain\ValueObjects\Money;
+use App\Domain\ValueObjects\Price;
 use App\Enums\OrderStatus;
 use App\Enums\Side;
 use App\Enums\Symbol;
@@ -140,7 +142,7 @@ final class PlaceOrderServiceTest extends TestCase
             ->andReturnUsing(function (Order $incoming, Order $counter) {
                 $incoming->fill();
 
-                return new \App\Domain\Events\OrderMatched(
+                return new OrderMatched(
                     buyOrderId: $incoming->id(),
                     sellOrderId: $counter->id(),
                     buyerUserId: $incoming->userId(),
@@ -148,8 +150,8 @@ final class PlaceOrderServiceTest extends TestCase
                     symbol: $incoming->symbol(),
                     matchPrice: $counter->price(),
                     matchAmount: $incoming->amount(),
-                    volume: \App\Domain\ValueObjects\Money::fromMicroUsd(0),
-                    fee: \App\Domain\ValueObjects\Money::fromMicroUsd(0),
+                    volume: Money::fromMicroUsd(0),
+                    fee: Money::fromMicroUsd(0),
                 );
             });
 
@@ -234,7 +236,7 @@ final class PlaceOrderServiceTest extends TestCase
             userId: $userId,
             symbol: Symbol::BTC,
             side: $side,
-            price: \App\Domain\ValueObjects\Price::fromUsd('95000'),
+            price: Price::fromUsd('95000'),
             amount: Amount::fromDecimal('0.01'),
             status: OrderStatus::Open,
         );
