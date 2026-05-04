@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import PlaceOrderForm from '../components/PlaceOrderForm.vue'
 import { useAuthStore } from '../stores/auth'
 import { useProfileStore } from '../stores/profile'
 
@@ -35,7 +36,7 @@ async function logout(): Promise<void> {
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl space-y-6 p-6">
+    <main class="mx-auto max-w-5xl grid gap-6 p-6 lg:grid-cols-2">
       <section class="rounded-lg bg-white p-6 shadow">
         <div class="flex items-center justify-between">
           <h2 class="text-base font-semibold text-gray-900">Wallet</h2>
@@ -86,6 +87,8 @@ async function logout(): Promise<void> {
           </table>
         </div>
       </section>
+
+      <PlaceOrderForm />
     </main>
   </div>
 </template>
