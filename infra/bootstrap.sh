@@ -62,6 +62,7 @@ QUEUE_CONNECTION=database
 CACHE_STORE=database
 
 SANCTUM_STATEFUL_DOMAINS=${domain}
+FRONTEND_URL=https://${domain}
 
 REVERB_APP_ID=orderbook
 REVERB_APP_KEY=orderbookkey

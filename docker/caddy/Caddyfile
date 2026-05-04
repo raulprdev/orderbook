@@ -1,8 +1,16 @@
 {$DOMAIN} {
     encode gzip
 
-    @backend path /api/* /sanctum/* /broadcasting/* /login /logout /register
+    @backend path /api/* /sanctum/* /broadcasting/*
     handle @backend {
+        reverse_proxy nginx:80
+    }
+
+    @backend_auth {
+        path /login /logout /register
+        method POST
+    }
+    handle @backend_auth {
         reverse_proxy nginx:80
     }
 
