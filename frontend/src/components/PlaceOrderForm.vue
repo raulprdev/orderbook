@@ -18,13 +18,29 @@ const errors = ref<Record<string, string[]>>({})
 const generalError = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
 
-const volumePreview = computed<string | null>(() => {
+// Hardcoded to mirror backend config/orderbook.php commission_basis_points (150 = 1.5%).
+// In production we'd fetch this from a server-driven config endpoint to keep them in sync.
+const COMMISSION_BASIS_POINTS = 150
+
+interface PreviewBreakdown {
+  volume: string
+  fee: string
+  total: string
+}
+
+const previewBreakdown = computed<PreviewBreakdown | null>(() => {
   const p = parseFloat(price.value)
   const a = parseFloat(amount.value)
   if (!Number.isFinite(p) || !Number.isFinite(a) || p <= 0 || a <= 0) {
     return null
   }
-  return (p * a).toFixed(2)
+  const volume = p * a
+  const fee = (volume * COMMISSION_BASIS_POINTS) / 10_000
+  return {
+    volume: volume.toFixed(2),
+    fee: fee.toFixed(2),
+    total: (volume + fee).toFixed(2),
+  }
 })
 
 function fieldError(field: string): string | null {
@@ -117,8 +133,27 @@ async function submit(): Promise<void> {
         </label>
       </div>
 
-      <div v-if="volumePreview" class="text-sm text-gray-600">
-        Volume: <span class="font-medium tabular-nums">${{ volumePreview }}</span>
+      <div v-if="previewBreakdown" class="space-y-1 rounded bg-gray-50 p-3 text-sm text-gray-700">
+        <div class="flex justify-between">
+          <span>Volume (price × amount)</span>
+          <span class="tabular-nums">${{ previewBreakdown.volume }}</span>
+        </div>
+        <template v-if="side === 'buy'">
+          <div class="flex justify-between text-gray-500">
+            <span>Fee (1.5%)</span>
+            <span class="tabular-nums">+${{ previewBreakdown.fee }}</span>
+          </div>
+          <div class="flex justify-between border-t border-gray-200 pt-1 font-semibold text-gray-900">
+            <span>You'll pay</span>
+            <span class="tabular-nums">${{ previewBreakdown.total }}</span>
+          </div>
+        </template>
+        <template v-else>
+          <div class="flex justify-between border-t border-gray-200 pt-1 font-semibold text-gray-900">
+            <span>You'll receive</span>
+            <span class="tabular-nums">${{ previewBreakdown.volume }}</span>
+          </div>
+        </template>
       </div>
 
       <div v-if="generalError" class="rounded bg-red-50 p-3 text-sm text-red-700">

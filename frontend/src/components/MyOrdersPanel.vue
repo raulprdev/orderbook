@@ -1,10 +1,25 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useMyOrdersStore } from '../stores/myOrders'
 import { useProfileStore } from '../stores/profile'
+import { ORDER_STATUSES, SIDES, SYMBOLS } from '../types/enums'
 
 const myOrders = useMyOrdersStore()
 const profile = useProfileStore()
+
+type Filter<T extends string> = T | 'all'
+
+const symbolFilter = ref<Filter<string>>('all')
+const sideFilter = ref<Filter<string>>('all')
+const statusFilter = ref<Filter<string>>('all')
+
+const filteredOrders = computed(() =>
+  myOrders.orders.filter((order) =>
+    (symbolFilter.value === 'all' || order.symbol === symbolFilter.value) &&
+    (sideFilter.value === 'all' || order.side === sideFilter.value) &&
+    (statusFilter.value === 'all' || order.status === statusFilter.value)
+  )
+)
 
 onMounted(() => {
   myOrders.refresh()
@@ -42,7 +57,31 @@ function statusClass(status: string): string {
       </button>
     </div>
 
-    <table class="mt-4 w-full text-sm">
+    <div class="mt-4 flex flex-wrap gap-3 text-xs">
+      <label class="flex items-center gap-1 text-gray-600">
+        Symbol
+        <select v-model="symbolFilter" class="rounded border border-gray-300 px-2 py-1">
+          <option value="all">All</option>
+          <option v-for="s in SYMBOLS" :key="s" :value="s">{{ s }}</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-1 text-gray-600">
+        Side
+        <select v-model="sideFilter" class="rounded border border-gray-300 px-2 py-1">
+          <option value="all">All</option>
+          <option v-for="s in SIDES" :key="s" :value="s">{{ s }}</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-1 text-gray-600">
+        Status
+        <select v-model="statusFilter" class="rounded border border-gray-300 px-2 py-1">
+          <option value="all">All</option>
+          <option v-for="s in ORDER_STATUSES" :key="s" :value="s">{{ s }}</option>
+        </select>
+      </label>
+    </div>
+
+    <table class="mt-3 w-full text-sm">
       <thead class="text-left text-xs uppercase text-gray-500">
         <tr>
           <th class="pb-2">Symbol</th>
@@ -54,11 +93,13 @@ function statusClass(status: string): string {
         </tr>
       </thead>
       <tbody>
-        <tr v-if="myOrders.orders.length === 0" class="text-gray-500">
-          <td colspan="6" class="py-2 italic">No orders yet.</td>
+        <tr v-if="filteredOrders.length === 0" class="text-gray-500">
+          <td colspan="6" class="py-2 italic">
+            {{ myOrders.orders.length === 0 ? 'No orders yet.' : 'No orders match the current filter.' }}
+          </td>
         </tr>
         <tr
-          v-for="order in myOrders.orders"
+          v-for="order in filteredOrders"
           :key="order.id"
           class="border-t border-gray-100"
         >
