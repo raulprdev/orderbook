@@ -1,0 +1,16 @@
+#cloud-config
+package_update: true
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - git
+
+write_files:
+  - path: /opt/bootstrap.sh
+    permissions: '0755'
+    encoding: b64
+    content: ${bootstrap_b64}
+
+runcmd:
+  - [bash, /opt/bootstrap.sh]

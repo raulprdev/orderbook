@@ -1,0 +1,19 @@
+{$DOMAIN} {
+    encode gzip
+
+    @backend path /api/* /sanctum/* /broadcasting/* /login /logout /register
+    handle @backend {
+        reverse_proxy nginx:80
+    }
+
+    @websocket path /app/*
+    handle @websocket {
+        reverse_proxy reverb:8080
+    }
+
+    handle {
+        root * /srv/spa
+        try_files {path} /index.html
+        file_server
+    }
+}

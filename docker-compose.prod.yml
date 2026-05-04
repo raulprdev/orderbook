@@ -1,0 +1,31 @@
+name: orderbook
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: orderbook_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./frontend/dist:/srv/spa:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      DOMAIN: ${DOMAIN}
+    depends_on:
+      - nginx
+      - reverb
+    networks:
+      - orderbook
+
+  node:
+    profiles: ["build"]
+    command: sh -c "npm ci && npm run build"
+    restart: "no"
+
+volumes:
+  caddy_data:
+  caddy_config:
