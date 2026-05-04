@@ -13,21 +13,15 @@ provider "aws" {
   region = var.region
 }
 
-locals {
-  bootstrap_script = templatefile("${path.module}/bootstrap.sh", {
-    repo_url = var.repo_url
-    domain   = var.domain
-  })
-}
-
 resource "aws_lightsail_instance" "orderbook" {
   name              = var.instance_name
   availability_zone = "${var.region}a"
   blueprint_id      = "ubuntu_24_04"
   bundle_id         = var.bundle_id
 
-  user_data = templatefile("${path.module}/cloud-init.yaml", {
-    bootstrap_b64 = base64encode(local.bootstrap_script)
+  user_data = templatefile("${path.module}/bootstrap.sh", {
+    repo_url = var.repo_url
+    domain   = var.domain
   })
 
   tags = {

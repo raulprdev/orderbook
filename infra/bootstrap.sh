@@ -1,5 +1,12 @@
 #!/bin/bash
+# Lightsail runs user_data under /bin/sh (dash). Re-exec under bash so we get
+# `set -o pipefail` and other bash features.
+[ -z "${BASH_VERSION:-}" ] && exec /bin/bash "$0" "$@"
 set -euxo pipefail
+
+# 0. Apt prerequisites
+apt-get update -y
+apt-get install -y ca-certificates curl gnupg git
 
 # 1. Install Docker from the official apt repo
 install -m 0755 -d /etc/apt/keyrings
@@ -91,6 +98,7 @@ $COMPOSE build
 $COMPOSE up -d postgres
 sleep 8
 
+$COMPOSE run --rm app composer install --no-dev --optimize-autoloader
 $COMPOSE run --rm app php artisan key:generate --force
 $COMPOSE run --rm app php artisan migrate --force
 $COMPOSE run --rm app php artisan db:seed --class=DemoSeeder --force

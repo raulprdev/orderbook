@@ -13,17 +13,14 @@ export const echo = new Echo({
   forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
   enabledTransports: ['ws', 'wss'],
   authorizer: (channel: { name: string }) => ({
-    authorize: (
-      socketId: string,
-      callback: (error: unknown, response?: unknown) => void,
-    ) => {
+    authorize: (socketId: string, callback: any) => {
       api
         .post('/broadcasting/auth', {
           socket_id: socketId,
           channel_name: channel.name,
         })
         .then((response) => callback(null, response.data))
-        .catch((error) => callback(error, undefined))
+        .catch((error) => callback(error))
     },
   }),
 })
