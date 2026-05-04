@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Entities\Asset;
 use App\Domain\ValueObjects\Money;
+use App\Http\Resources\AssetResource;
 use App\Repositories\Contracts\AssetRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,14 +23,7 @@ final class ProfileController extends Controller
                 'email' => $user->email,
             ],
             'balance' => Money::fromMicroUsd($user->balance)->toUsd(),
-            'assets' => array_map(
-                fn (Asset $asset) => [
-                    'symbol' => $asset->symbol()->value,
-                    'amount' => $asset->amount()->toDecimal(),
-                    'locked_amount' => $asset->lockedAmount()->toDecimal(),
-                ],
-                $assets->userAssets($user->id),
-            ),
+            'assets' => AssetResource::collection($assets->userAssets($user->id)),
         ]);
     }
 }

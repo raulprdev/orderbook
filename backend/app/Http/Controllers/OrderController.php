@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Entities\Order;
+use App\DataTransferObjects\PlaceOrderData;
 use App\Enums\Symbol;
+use App\Http\Requests\PlaceOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Repositories\Contracts\OrderRepository;
+use App\Services\PlaceOrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -19,18 +22,22 @@ final class OrderController extends Controller
             'symbol' => ['required', Rule::enum(Symbol::class)],
         ]);
 
-        $symbol = Symbol::from($validated['symbol']);
-
         return response()->json([
-            'orders' => array_map(
-                fn (Order $order) => [
-                    'id' => $order->id(),
-                    'side' => $order->side()->value,
-                    'price' => $order->price()->toUsd(),
-                    'amount' => $order->amount()->toDecimal(),
-                ],
-                $orders->openOrdersForSymbol($symbol),
+            'orders' => OrderResource::collection(
+                $orders->openOrdersForSymbol(Symbol::from($validated['symbol']))
             ),
         ]);
+    }
+
+    public function store(PlaceOrderRequest $request, PlaceOrderService $placeOrder): JsonResponse
+    {
+        $order = $placeOrder(
+            data: PlaceOrderData::from($request->validated()),
+            userId: $request->user()->id,
+        );
+
+        return response()->json([
+            'order' => OrderResource::make($order),
+        ], 201);
     }
 }

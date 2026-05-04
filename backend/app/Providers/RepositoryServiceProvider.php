@@ -14,6 +14,9 @@ use App\Repositories\EloquentAssetRepository;
 use App\Repositories\EloquentOrderRepository;
 use App\Repositories\EloquentTradeRepository;
 use App\Repositories\EloquentUserRepository;
+use App\Services\CancelOrderService;
+use App\Services\MatchOrderService;
+use App\Services\PlaceOrderService;
 use Illuminate\Support\ServiceProvider;
 
 final class RepositoryServiceProvider extends ServiceProvider
@@ -25,5 +28,9 @@ final class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepository::class, EloquentUserRepository::class);
         $this->app->bind(TradeRepository::class, EloquentTradeRepository::class);
         $this->app->bind(MatchingStrategy::class, FirstValidMatchStrategy::class);
+
+        $this->app->when([MatchOrderService::class, PlaceOrderService::class, CancelOrderService::class])
+            ->needs('$commissionBasisPoints')
+            ->giveConfig('orderbook.commission_basis_points');
     }
 }
