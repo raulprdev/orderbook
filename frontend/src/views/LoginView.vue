@@ -16,7 +16,7 @@ async function submit(): Promise<void> {
   submitting.value = true
   try {
     await auth.login(email.value, password.value)
-    await router.push({ name: 'dashboard' })
+    await router.push({ name: 'overview' })
   } catch (e: any) {
     error.value = e.response?.data?.message ?? 'Login failed'
   } finally {

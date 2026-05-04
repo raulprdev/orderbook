@@ -16,8 +16,14 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    name: 'dashboard',
-    component: () => import('../views/DashboardView.vue'),
+    name: 'overview',
+    component: () => import('../views/OverviewView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/place-order',
+    name: 'place-order',
+    component: () => import('../views/PlaceOrderView.vue'),
     meta: { requiresAuth: true },
   },
 ]
@@ -35,7 +41,7 @@ router.beforeEach((to) => {
   }
 
   if (to.meta.guest && auth.isAuthenticated) {
-    return { name: 'dashboard' }
+    return { name: 'overview' }
   }
 })
 

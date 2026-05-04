@@ -25,7 +25,7 @@ async function submit(): Promise<void> {
       password: password.value,
       password_confirmation: passwordConfirmation.value,
     })
-    await router.push({ name: 'dashboard' })
+    await router.push({ name: 'overview' })
   } catch (e: any) {
     if (e.response?.status === 422) {
       errors.value = e.response.data.errors ?? {}

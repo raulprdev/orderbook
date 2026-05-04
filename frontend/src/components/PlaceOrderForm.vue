@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '../lib/api'
 import { useProfileStore } from '../stores/profile'
 import { SIDES, SYMBOLS, type Side, type Symbol } from '../types/enums'
 
 const profile = useProfileStore()
+const router = useRouter()
 
 const symbol = ref<Symbol>('BTC')
 const side = ref<Side>('buy')
@@ -45,6 +47,7 @@ async function submit(): Promise<void> {
     price.value = ''
     amount.value = ''
     await profile.refresh()
+    setTimeout(() => router.push({ name: 'overview' }), 600)
   } catch (e: any) {
     if (e.response?.status === 422) {
       if (e.response.data.errors) {
