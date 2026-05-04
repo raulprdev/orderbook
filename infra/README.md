@@ -51,7 +51,7 @@ cloud-init runs `bootstrap.sh` once. Takes ~5–10 minutes:
 2. Clones the repo to `/opt/orderbook`
 3. Generates random `DB_PASSWORD` and `REVERB_APP_SECRET`
 4. Writes prod `.env` files
-5. Runs migrations + `DemoSeeder` (creates `alice@example.com` and `bob@example.com`, both password `password`)
+5. Runs migrations + `DemoSeeder` (creates `alice@example.com` and `bob@example.com`, both password `secret-password`)
 6. Builds the SPA
 7. Brings the stack up
 
