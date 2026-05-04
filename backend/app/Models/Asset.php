@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Symbol;
+use Database\Factories\AssetFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Asset extends Model
 {
+    /** @use HasFactory<AssetFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'symbol',

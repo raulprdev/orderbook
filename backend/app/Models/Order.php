@@ -7,11 +7,16 @@ namespace App\Models;
 use App\Enums\OrderStatus;
 use App\Enums\Side;
 use App\Enums\Symbol;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
+    /** @use HasFactory<OrderFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'symbol',
