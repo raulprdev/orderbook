@@ -20,4 +20,10 @@ declare module 'vue-router' {
   }
 }
 
+declare global {
+  interface Window {
+    Pusher: unknown
+  }
+}
+
 export {}
