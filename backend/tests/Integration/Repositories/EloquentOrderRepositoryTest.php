@@ -24,11 +24,14 @@ final class EloquentOrderRepositoryTest extends TestCase
 
     private User $user;
 
+    private User $counterUser;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->repository = new EloquentOrderRepository;
         $this->user = User::factory()->create();
+        $this->counterUser = User::factory()->create();
     }
 
     public function test_save_persists_new_order_and_returns_with_assigned_id(): void
@@ -105,6 +108,14 @@ final class EloquentOrderRepositoryTest extends TestCase
         $this->assertNull($this->repository->firstMatchableCounterOrder($incomingBuy));
     }
 
+    public function test_first_matchable_skips_orders_from_the_same_user(): void
+    {
+        $this->seedOrder(side: Side::Sell, priceCent: 9_400_000, userId: $this->user->id);
+        $incomingBuy = $this->makeDomainOrder(side: Side::Buy, priceUsd: '95000');
+
+        $this->assertNull($this->repository->firstMatchableCounterOrder($incomingBuy));
+    }
+
     public function test_find_open_for_update_returns_open_order(): void
     {
         $eloquent = $this->seedOrder(side: Side::Buy, priceCent: 9_500_000);
@@ -144,9 +155,10 @@ final class EloquentOrderRepositoryTest extends TestCase
         OrderStatus $status = OrderStatus::Open,
         ?string $createdAt = null,
         int $amountSubunit = 1_000_000,
+        ?int $userId = null,
     ): EloquentOrder {
         return EloquentOrder::create([
-            'user_id' => $this->user->id,
+            'user_id' => $userId ?? $this->counterUser->id,
             'symbol' => Symbol::BTC,
             'side' => $side,
             'price' => $priceCent,

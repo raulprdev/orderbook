@@ -49,7 +49,8 @@ final class EloquentOrderRepository implements OrderRepository
             ->where('symbol', $incoming->symbol())
             ->where('side', $incoming->side()->opposite())
             ->where('status', OrderStatus::Open)
-            ->where('amount', $incoming->amount()->subunit());
+            ->where('amount', $incoming->amount()->subunit())
+            ->where('user_id', '!=', $incoming->userId());
 
         if ($incoming->side() === Side::Buy) {
             $query->where('price', '<=', $incoming->price()->cent());
