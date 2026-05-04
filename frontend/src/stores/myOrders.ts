@@ -10,6 +10,7 @@ export interface MyOrder {
   price: string
   amount: string
   status: OrderStatus
+  created_at: string
 }
 
 export const useMyOrdersStore = defineStore('myOrders', () => {

@@ -98,6 +98,9 @@ final class EloquentOrderRepository implements OrderRepository
             price: Price::fromCent($eloquent->price),
             amount: Amount::fromSubunit($eloquent->amount),
             status: $eloquent->status,
+            createdAt: $eloquent->created_at
+                ? \DateTimeImmutable::createFromInterface($eloquent->created_at)
+                : null,
         );
     }
 

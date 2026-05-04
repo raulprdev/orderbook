@@ -11,6 +11,7 @@ use App\Domain\ValueObjects\Price;
 use App\Enums\OrderStatus;
 use App\Enums\Side;
 use App\Enums\Symbol;
+use DateTimeImmutable;
 
 final class Order
 {
@@ -22,6 +23,7 @@ final class Order
         private readonly Price $price,
         private readonly Amount $amount,
         private OrderStatus $status,
+        private readonly ?DateTimeImmutable $createdAt = null,
     ) {
         if ($amount->subunit() === 0) {
             throw new InvalidOrder('Order amount must be strictly positive');
@@ -82,5 +84,10 @@ final class Order
     public function status(): OrderStatus
     {
         return $this->status;
+    }
+
+    public function createdAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { relativeTime } from '../lib/time'
 import { useMyOrdersStore } from '../stores/myOrders'
 import { useProfileStore } from '../stores/profile'
 import { ORDER_STATUSES, SIDES, SYMBOLS } from '../types/enums'
@@ -13,6 +14,10 @@ const symbolFilter = ref<Filter<string>>('all')
 const sideFilter = ref<Filter<string>>('all')
 const statusFilter = ref<Filter<string>>('all')
 
+// Reactive tick so relative-time strings refresh in the template every 30s.
+const now = ref(Date.now())
+let nowInterval: ReturnType<typeof setInterval> | null = null
+
 const filteredOrders = computed(() =>
   myOrders.orders.filter((order) =>
     (symbolFilter.value === 'all' || order.symbol === symbolFilter.value) &&
@@ -23,6 +28,11 @@ const filteredOrders = computed(() =>
 
 onMounted(() => {
   myOrders.refresh()
+  nowInterval = setInterval(() => { now.value = Date.now() }, 30_000)
+})
+
+onUnmounted(() => {
+  if (nowInterval) clearInterval(nowInterval)
 })
 
 async function cancelOrder(orderId: number): Promise<void> {
@@ -41,6 +51,12 @@ function statusClass(status: string): string {
     case 'cancelled': return 'bg-gray-100 text-gray-700'
     default: return 'bg-gray-100 text-gray-700'
   }
+}
+
+// `now` referenced so the computed re-runs on tick.
+function whenLabel(iso: string): string {
+  void now.value
+  return relativeTime(iso)
 }
 </script>
 
@@ -84,17 +100,18 @@ function statusClass(status: string): string {
     <table class="mt-3 w-full text-sm">
       <thead class="text-left text-xs uppercase text-gray-500">
         <tr>
-          <th class="pb-2">Symbol</th>
-          <th class="pb-2">Side</th>
-          <th class="pb-2 text-right">Price</th>
-          <th class="pb-2 text-right">Amount</th>
-          <th class="pb-2">Status</th>
+          <th class="pb-2 pr-4">Symbol</th>
+          <th class="pb-2 pr-4">Side</th>
+          <th class="pb-2 pr-4 text-right">Price</th>
+          <th class="pb-2 pr-6 text-right">Amount</th>
+          <th class="pb-2 pr-4">Status</th>
+          <th class="pb-2 pr-4">When</th>
           <th class="pb-2"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-if="filteredOrders.length === 0" class="text-gray-500">
-          <td colspan="6" class="py-2 italic">
+          <td colspan="7" class="py-2 italic">
             {{ myOrders.orders.length === 0 ? 'No orders yet.' : 'No orders match the current filter.' }}
           </td>
         </tr>
@@ -103,8 +120,8 @@ function statusClass(status: string): string {
           :key="order.id"
           class="border-t border-gray-100"
         >
-          <td class="py-2 font-medium text-gray-900">{{ order.symbol }}</td>
-          <td class="py-2">
+          <td class="py-2 pr-4 font-medium text-gray-900">{{ order.symbol }}</td>
+          <td class="py-2 pr-4">
             <span
               :class="order.side === 'buy' ? 'text-green-700' : 'text-red-700'"
               class="font-medium uppercase"
@@ -112,15 +129,18 @@ function statusClass(status: string): string {
               {{ order.side }}
             </span>
           </td>
-          <td class="py-2 text-right tabular-nums text-gray-700">${{ order.price }}</td>
-          <td class="py-2 text-right tabular-nums text-gray-700">{{ order.amount }}</td>
-          <td class="py-2">
+          <td class="py-2 pr-4 text-right tabular-nums text-gray-700">${{ order.price }}</td>
+          <td class="py-2 pr-6 text-right tabular-nums text-gray-700">{{ order.amount }}</td>
+          <td class="py-2 pr-4">
             <span
               :class="statusClass(order.status)"
               class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium uppercase"
             >
               {{ order.status }}
             </span>
+          </td>
+          <td class="py-2 pr-4 text-xs text-gray-500" :title="order.created_at">
+            {{ whenLabel(order.created_at) }}
           </td>
           <td class="py-2 text-right">
             <button

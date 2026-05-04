@@ -22,6 +22,7 @@ final class OrderResource extends JsonResource
             'price' => $this->resource->price()->toUsd(),
             'amount' => $this->resource->amount()->toDecimal(),
             'status' => $this->resource->status()->value,
+            'created_at' => $this->resource->createdAt()?->format(DATE_ATOM),
         ];
     }
 }
