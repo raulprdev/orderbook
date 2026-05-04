@@ -35,9 +35,18 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
+  async function bootstrap(): Promise<void> {
+    try {
+      const { data } = await api.get('/api/profile')
+      user.value = data.user
+    } catch {
+      user.value = null
+    }
+  }
+
   function setUser(value: AuthUser | null): void {
     user.value = value
   }
 
-  return { user, isAuthenticated, login, register, logout, setUser }
+  return { user, isAuthenticated, login, register, logout, bootstrap, setUser }
 })
