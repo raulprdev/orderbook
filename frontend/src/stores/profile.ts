@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../lib/api'
+import type { Symbol } from '../types/enums'
 
 export interface AssetSummary {
-  symbol: string
+  symbol: Symbol
   amount: string
   locked_amount: string
 }

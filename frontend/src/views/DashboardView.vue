@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import OrderbookPanel from '../components/OrderbookPanel.vue'
 import PlaceOrderForm from '../components/PlaceOrderForm.vue'
 import { useAuthStore } from '../stores/auth'
 import { useProfileStore } from '../stores/profile'
@@ -89,6 +90,8 @@ async function logout(): Promise<void> {
       </section>
 
       <PlaceOrderForm />
+
+      <OrderbookPanel class="lg:col-span-2" />
     </main>
   </div>
 </template>

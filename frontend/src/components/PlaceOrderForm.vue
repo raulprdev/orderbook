@@ -2,11 +2,12 @@
 import { computed, ref } from 'vue'
 import api from '../lib/api'
 import { useProfileStore } from '../stores/profile'
+import { SIDES, SYMBOLS, type Side, type Symbol } from '../types/enums'
 
 const profile = useProfileStore()
 
-const symbol = ref<'BTC' | 'ETH'>('BTC')
-const side = ref<'buy' | 'sell'>('buy')
+const symbol = ref<Symbol>('BTC')
+const side = ref<Side>('buy')
 const price = ref<string>('')
 const amount = ref<string>('')
 
@@ -72,8 +73,7 @@ async function submit(): Promise<void> {
             v-model="symbol"
             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
           >
-            <option value="BTC">BTC</option>
-            <option value="ETH">ETH</option>
+            <option v-for="s in SYMBOLS" :key="s" :value="s">{{ s }}</option>
           </select>
         </label>
 
@@ -83,8 +83,7 @@ async function submit(): Promise<void> {
             v-model="side"
             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
           >
-            <option value="buy">Buy</option>
-            <option value="sell">Sell</option>
+            <option v-for="s in SIDES" :key="s" :value="s">{{ s }}</option>
           </select>
         </label>
 
