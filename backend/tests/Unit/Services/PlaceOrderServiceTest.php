@@ -18,12 +18,14 @@ use App\Domain\ValueObjects\Price;
 use App\Enums\OrderStatus;
 use App\Enums\Side;
 use App\Enums\Symbol;
+use App\Events\OrderMatchedBroadcast;
 use App\Repositories\Contracts\AssetRepository;
 use App\Repositories\Contracts\OrderRepository;
 use App\Repositories\Contracts\UserRepository;
 use App\Services\MatchOrderService;
 use App\Services\PlaceOrderService;
 use Closure;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -60,6 +62,7 @@ final class PlaceOrderServiceTest extends TestCase
             $matcher,
             Mockery::mock(MatchOrderService::class),
             $this->mockedConnectionRunningClosure(),
+            $this->idleDispatcher(),
             self::COMMISSION_BASIS_POINTS,
         );
 
@@ -106,6 +109,7 @@ final class PlaceOrderServiceTest extends TestCase
             $matcher,
             Mockery::mock(MatchOrderService::class),
             $this->mockedConnectionRunningClosure(),
+            $this->idleDispatcher(),
             self::COMMISSION_BASIS_POINTS,
         );
 
@@ -119,7 +123,7 @@ final class PlaceOrderServiceTest extends TestCase
         $this->assertSame(1_000_000, $asset->lockedAmount()->subunit(), '0.01 BTC locked');
     }
 
-    public function test_place_buy_with_match_invokes_match_service(): void
+    public function test_place_buy_with_match_invokes_match_service_and_dispatches_broadcast(): void
     {
         $user = $this->makeUser(balanceUsd: '1000.00');
 
@@ -155,6 +159,9 @@ final class PlaceOrderServiceTest extends TestCase
                 );
             });
 
+        $events = Mockery::mock(Dispatcher::class);
+        $events->expects('dispatch')->with(Mockery::type(OrderMatchedBroadcast::class));
+
         $service = new PlaceOrderService(
             $users,
             Mockery::mock(AssetRepository::class),
@@ -162,6 +169,7 @@ final class PlaceOrderServiceTest extends TestCase
             $matcher,
             $matchService,
             $this->mockedConnectionRunningClosure(),
+            $events,
             self::COMMISSION_BASIS_POINTS,
         );
 
@@ -187,6 +195,7 @@ final class PlaceOrderServiceTest extends TestCase
             Mockery::mock(MatchingStrategy::class),
             Mockery::mock(MatchOrderService::class),
             $this->mockedConnectionRunningClosure(),
+            $this->idleDispatcher(),
             self::COMMISSION_BASIS_POINTS,
         );
 
@@ -214,6 +223,7 @@ final class PlaceOrderServiceTest extends TestCase
             Mockery::mock(MatchingStrategy::class),
             Mockery::mock(MatchOrderService::class),
             $this->mockedConnectionRunningClosure(),
+            $this->idleDispatcher(),
             self::COMMISSION_BASIS_POINTS,
         );
 
@@ -261,5 +271,10 @@ final class PlaceOrderServiceTest extends TestCase
         $db->expects('transaction')->andReturnUsing(fn (Closure $callback) => $callback());
 
         return $db;
+    }
+
+    private function idleDispatcher(): Dispatcher
+    {
+        return Mockery::mock(Dispatcher::class);
     }
 }

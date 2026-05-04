@@ -15,9 +15,11 @@ use App\Domain\ValueObjects\Price;
 use App\Enums\OrderStatus;
 use App\Enums\Side;
 use App\Enums\Symbol;
+use App\Events\OrderMatchedBroadcast;
 use App\Repositories\Contracts\AssetRepository;
 use App\Repositories\Contracts\OrderRepository;
 use App\Repositories\Contracts\UserRepository;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 
 final class PlaceOrderService
@@ -29,6 +31,7 @@ final class PlaceOrderService
         private readonly MatchingStrategy $matcher,
         private readonly MatchOrderService $matchService,
         private readonly ConnectionInterface $db,
+        private readonly Dispatcher $events,
         private readonly int $commissionBasisPoints,
     ) {}
 
@@ -64,7 +67,8 @@ final class PlaceOrderService
 
         $counter = $this->matcher->findMatch($order);
         if ($counter !== null) {
-            $this->matchService->settle($order, $counter);
+            $matched = $this->matchService->settle($order, $counter);
+            $this->events->dispatch(new OrderMatchedBroadcast($matched));
         }
 
         return $order;
